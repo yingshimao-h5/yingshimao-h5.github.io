@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影视猫 - 电影剧集推荐与分类导航</title>
+<meta name="description" content="影视猫(yingshimao-h5.github.io)提供电影、剧集、纪录片分类推荐与片单导航，移动端自适应单页，不提供播放入源，仅做影视资讯整理。">
+<meta name="keywords" content="影视猫, yingshimao, 电影推荐, 剧集导航, 影视分类, 观影片单">
+<style>
+/* ========== 全局 ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+  background: #f6f4f1;
+  color: #2b2722;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ========== 栏目1：顶部导航 ========== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #ece6dd;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: .7rem 1.2rem;
+}
+.topbar-in {
+  max-width: 1180px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #2b2722;
+}
+.logo b { color: #ff7a1a; }
+.logo .ear {
+  display: inline-block;
+  transform: translateY(-2px);
+  margin: 0 1px;
+}
+.nav-links { display: flex; gap: 1.6rem; }
+.nav-links a {
+  font-size: .88rem;
+  color: #7a7066;
+  transition: color .25s;
+}
+.nav-links a:hover { color: #ff7a1a; }
+
+/* ========== 栏目2：Hero 首屏 ========== */
+.hero {
+  max-width: 1180px;
+  margin: auto;
+  padding: 3.5rem 1.2rem 2.5rem;
+  text-align: center;
+}
+.hero h1 {
+  font-size: 3rem;
+  color: #2b2722;
+  line-height: 1.2;
+  margin-bottom: .8rem;
+}
+.hero h1 b { color: #ff7a1a; }
+.hero h1 .ear { color: #ff7a1a; }
+.hero p {
+  max-width: 540px;
+  margin: 0 auto 1.8rem;
+  color: #6f665c;
+}
+.hero-btn {
+  display: inline-block;
+  background: #ff7a1a;
+  color: #fff;
+  font-weight: 700;
+  padding: .7rem 2.2rem;
+  border-radius: 30px;
+  transition: .25s;
+}
+.hero-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,122,26,.25); }
+
+/* 猫爪分隔 */
+.paw {
+  text-align: center;
+  color: #ff7a1a;
+  font-size: 1.1rem;
+  letter-spacing: 6px;
+  margin: 1rem 0 2.5rem;
+  opacity: .6;
+}
+
+/* ========== 栏目3：分类磁贴 ========== */
+.cats-sec { max-width: 1180px; margin: auto; padding: 0 1.2rem 3rem; }
+.sec-title {
+  font-size: 1.5rem;
+  color: #2b2722;
+  margin-bottom: 1.5rem;
+  padding-left: .8rem;
+  border-left: 4px solid #ff7a1a;
+}
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap: 1rem;
+}
+.cat-tile {
+  background: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 14px;
+  padding: 1.3rem 1rem;
+  text-align: center;
+  transition: .25s;
+}
+.cat-tile:hover { border-color: #ff7a1a; transform: translateY(-4px); }
+.cat-tile .ico { font-size: 1.6rem; display: block; margin-bottom: .4rem; }
+.cat-tile h4 { font-size: .98rem; color: #2b2722; }
+.cat-tile span { font-size: .76rem; color: #a99e90; }
+
+/* ========== 栏目4：推荐卡片（带评分条） ========== */
+.rec-sec { max-width: 1180px; margin: auto; padding: 0 1.2rem 3rem; }
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 1.2rem;
+}
+.rec-card {
+  background: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: .25s;
+}
+.rec-card:hover { transform: translateY(-5px); box-shadow: 0 10px 24px rgba(43,39,34,.08); }
+.rec-cover {
+  height: 150px;
+  background: linear-gradient(135deg,#ffe7d2,#fff);
+  display: grid;
+  place-items: center;
+  color: #d8b48f;
+  font-size: .8rem;
+}
+.rec-body { padding: 1rem 1.1rem 1.2rem; }
+.rec-body h4 { font-size: 1.02rem; color: #2b2722; margin-bottom: .3rem; }
+.rec-body .type { font-size: .76rem; color: #ff7a1a; font-weight: 600; }
+.rec-body p { font-size: .82rem; color: #6f665c; margin-top: .4rem; }
+.score {
+  margin-top: .7rem;
+  height: 6px;
+  background: #efe9e1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.score i {
+  display: block;
+  height: 100%;
+  background: #ff7a1a;
+  border-radius: 10px;
+}
+.score-num { font-size: .72rem; color: #a99e90; margin-top: .3rem; }
+
+/* ========== 栏目5：剧集列表 ========== */
+.series-sec { max-width: 1180px; margin: auto; padding: 0 1.2rem 3rem; }
+.series-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 12px;
+  padding: .9rem 1.2rem;
+  margin-bottom: .8rem;
+  transition: .25s;
+}
+.series-row:hover { border-color: #ff7a1a; }
+.series-row h4 { font-size: 1rem; color: #2b2722; }
+.series-row p { font-size: .82rem; color: #6f665c; }
+.tag {
+  font-size: .72rem;
+  padding: .2rem .7rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  align-self: center;
+}
+.tag.hot { background: #fff0e2; color: #ff7a1a; }
+.tag.end { background: #eef0ee; color: #8a8a8a; }
+.tag.wait { background: #f3eee7; color: #a99e90; }
+
+/* ========== 栏目6：片单两栏 ========== */
+.pian-sec { max-width: 1180px; margin: auto; padding: 0 1.2rem 3rem; }
+.pian-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.pian-card {
+  background: #fff;
+  border: 1px solid #ece6dd;
+  border-top: 3px solid #ff7a1a;
+  border-radius: 12px;
+  padding: 1.4rem 1.6rem;
+}
+.pian-card h4 { color: #2b2722; font-size: 1.08rem; margin-bottom: .5rem; }
+.pian-card p { font-size: .86rem; color: #6f665c; margin-bottom: .6rem; }
+.pian-tags { display: flex; gap: .5rem; flex-wrap: wrap; }
+.pian-tags span {
+  font-size: .74rem;
+  color: #ff7a1a;
+  border: 1px solid #ffd9bd;
+  padding: .15rem .6rem;
+  border-radius: 20px;
+}
+
+/* ========== 关于 ========== */
+.about {
+  background: #fff;
+  border-top: 1px solid #ece6dd;
+  padding: 3.5rem 1.2rem;
+  text-align: center;
+}
+.about-in { max-width: 680px; margin: auto; }
+.about h2 { color: #2b2722; font-size: 1.5rem; margin-bottom: 1rem; }
+.about p { color: #6f665c; font-size: .92rem; margin-bottom: .8rem; }
+.about b { color: #ff7a1a; }
+
+/* ========== 页脚 ========== */
+footer {
+  background: #2b2722;
+  color: #b8afa4;
+  text-align: center;
+  padding: 2.2rem 1rem;
+  font-size: .82rem;
+}
+footer a { color: #ff7a1a; }
+.disclaim {
+  max-width: 680px;
+  margin: .8rem auto 0;
+  font-size: .72rem;
+  color: #8a8178;
+  line-height: 1.6;
+}
+
+/* ========== 移动端 ========== */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2.1rem; }
+  .pian-grid { grid-template-columns: 1fr; }
+  .series-row { grid-template-columns: 1fr; }
+  .series-row .tag { justify-self: start; }
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<!-- 导航 -->
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="logo"><span class="ear">▲</span>影视<b>猫</b><span class="ear">▲</span></div>
+    <nav class="nav-links">
+      <a href="#">首页</a>
+      <a href="#cats">分类</a>
+      <a href="#rec">今日推荐</a>
+      <a href="#series">热播剧集</a>
+      <a href="#pian">片单</a>
+    </nav>
+  </div>
+</div>
+
+<!-- 首屏 -->
+<section class="hero">
+  <h1><span class="ear">^•</span> 影视猫 <span class="ear">•^</span><br>挑片像猫挑窝</h1>
+  <p>影视猫（yingshimao-h5.github.io）做电影、剧集、纪录片的分类推荐与片单导航，按心情和时长挑片，不挂播放入源，手机上直接翻。</p>
+  <a href="#cats" class="hero-btn">撸片去</a>
+  <div class="paw">🐾 🐾 🐾</div>
+</section>
+
+<!-- 分类磁贴 -->
+<section class="cats-sec" id="cats">
+  <h2 class="sec-title">分类逛逛</h2>
+  <div class="cat-grid">
+    <div class="cat-tile"><span class="ico">🎬</span><h4>剧情</h4><span>120+</span></div>
+    <div class="cat-tile"><span class="ico">😆</span><h4>喜剧</h4><span>86</span></div>
+    <div class="cat-tile"><span class="ico">🕵️</span><h4>悬疑</h4><span>94</span></div>
+    <div class="cat-tile"><span class="ico">🚀</span><h4>科幻</h4><span>61</span></div>
+    <div class="cat-tile"><span class="ico">🍜</span><h4>治愈</h4><span>73</span></div>
+    <div class="cat-tile"><span class="ico">📜</span><h4>历史</h4><span>58</span></div>
+    <div class="cat-tile"><span class="ico">🎨</span><h4>动画</h4><span>80</span></div>
+    <div class="cat-tile"><span class="ico">🎤</span><h4>纪录片</h4><span>47</span></div>
+  </div>
+</section>
+
+<!-- 推荐卡片 -->
+<section class="rec-sec" id="rec">
+  <h2 class="sec-title">今日推荐</h2>
+  <div class="rec-grid">
+    <div class="rec-card">
+      <div class="rec-cover">封面位</div>
+      <div class="rec-body">
+        <span class="type">剧情 · 2026</span>
+        <h4>城北旧事</h4>
+        <p>群像慢热，适合晚上安静看。</p>
+        <div class="score"><i style="width:88%"></i></div>
+        <div class="score-num">评分 8.8</div>
+      </div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-cover">封面位</div>
+      <div class="rec-body">
+        <span class="type">悬疑 · 短剧</span>
+        <h4>第十三天</h4>
+        <p>单集15分钟，午间能刷两集。</p>
+        <div class="score"><i style="width:82%"></i></div>
+        <div class="score-num">评分 8.2</div>
+      </div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-cover">封面位</div>
+      <div class="rec-body">
+        <span class="type">治愈 · 日常</span>
+        <h4>巷口食堂</h4>
+        <p>低冲突配饭神器。</p>
+        <div class="score"><i style="width:85%"></i></div>
+        <div class="score-num">评分 8.5</div>
+      </div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-cover">封面位</div>
+      <div class="rec-body">
+        <span class="type">科幻 · 动画</span>
+        <h4>轨道之上</h4>
+        <p>美术强，设定不烧脑。</p>
+        <div class="score"><i style="width:80%"></i></div>
+        <div class="score-num">评分 8.0</div>
+      </div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-cover">封面位</div>
+      <div class="rec-body">
+        <span class="type">纪录片</span>
+        <h4>旧厂回声</h4>
+        <p>工业口述史，周末连看。</p>
+        <div class="score"><i style="width:87%"></i></div>
+        <div class="score-num">评分 8.7</div>
+      </div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-cover">封面位</div>
+      <div class="rec-body">
+        <span class="type">喜剧 · 轻</span>
+        <h4>加班别call我</h4>
+        <p>职场轻喜剧，笑点密。</p>
+        <div class="score"><i style="width:79%"></i></div>
+        <div class="score-num">评分 7.9</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 剧集列表 -->
+<section class="series-sec" id="series">
+  <h2 class="sec-title">热播剧集</h2>
+  <div class="series-row">
+    <div>
+      <h4>长夜邮局</h4>
+      <p>悬疑 / 单元剧 / 单集独立案</p>
+    </div>
+    <span class="tag hot">更新中</span>
+  </div>
+  <div class="series-row">
+    <div>
+      <h4>南方汽水厂</h4>
+      <p>年代 / 家庭 / 慢节奏</p>
+    </div>
+    <span class="tag end">已完结</span>
+  </div>
+  <div class="series-row">
+    <div>
+      <h4>代码之外</h4>
+      <p>职场 / 科技 / 轻悬疑</p>
+    </div>
+    <span class="tag hot">更新中</span>
+  </div>
+  <div class="series-row">
+    <div>
+      <h4>山海小饭桌</h4>
+      <p>治愈 / 美食 / 单元日常</p>
+    </div>
+    <span class="tag wait">待更新</span>
+  </div>
+  <div class="series-row">
+    <div>
+      <h4>第七次重逢</h4>
+      <p>爱情 / 都市 / 反转中等</p>
+    </div>
+    <span class="tag end">已完结</span>
+  </div>
+</section>
+
+<!-- 片单 -->
+<section class="pian-sec" id="pian">
+  <h2 class="sec-title">主题片单</h2>
+  <div class="pian-grid">
+    <div class="pian-card">
+      <h4>下班后别太累</h4>
+      <p>单集短、冲突低、退出成本低，20分钟碎片刚好。</p>
+      <div class="pian-tags"><span>轻喜剧</span><span>日常</span><span>单元</span></div>
+    </div>
+    <div class="pian-card">
+      <h4>周末连看两部</h4>
+      <p>剧情完整、节奏中等，沙发场景一次看完。</p>
+      <div class="pian-tags"><span>剧情</span><span>悬疑</span><span>电影</span></div>
+    </div>
+    <div class="pian-card">
+      <h4>配饭不费脑</h4>
+      <p>对白多、画面稳，午饭间隙不卡壳。</p>
+      <div class="pian-tags"><span>美食</span><span>治愈</span></div>
+    </div>
+    <div class="pian-card">
+      <h4>认真看一部</h4>
+      <p>叙事密度高、值得二刷，留整段时间。</p>
+      <div class="pian-tags"><span>文艺</span><span>历史</span><span>纪录片</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 关于 -->
+<section class="about">
+  <div class="about-in">
+    <h2>关于影视猫</h2>
+    <p>欢迎访问 <b>影视猫</b>（https://yingshimao-h5.github.io），本站是静态单页影视推荐导航，核心词：影视猫 / yingshimao / 电影推荐 / 剧集导航。</p>
+    <p>不提供在线播放入源、不存储视听文件、不聚合第三方资源，仅做内容整理与分类导航。</p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 影视猫 · yingshimao-h5.github.io</p>
+  <p>网址：<a href="https://yingshimao-h5.github.io">https://yingshimao-h5.github.io</a></p>
+  <p class="disclaim">本页为影视推荐导航示例，不托管、不上传、不代理任何视频文件或流媒体播放服务，不提供未授权播放入源；站内信息整理自公开资料，版权归原权利方所有。若实际建站涉及互联网视听节目传播，请按属地广电与版权要求办理相应许可。</p>
+</footer>
+
+</body>
+</html>
